@@ -1,0 +1,61 @@
+ArrayList<Stars> stars;
+int numberofstars = 1000, trails;
+float vari = 100; 
+
+void setup() {
+  fullScreen();
+  size(500,500);
+  stars = new ArrayList<Stars>();
+  
+  for(int i=0;i<numberofstars;i++) {
+    stars.add(new Stars(random(0,width),random(0,height)));
+  }
+}
+
+void draw() {
+  background(0);
+  for(int i=0;i<numberofstars;i++) {
+    Stars s = stars.get(i);
+    s.movestars();
+    s.displaystars();
+  }
+  //vari = (mouseY*100/height);
+}
+
+class Stars {
+  float x,y, xstrt,ystrt, size,a,dist;
+  Stars(float tempx, float tempy) {
+    xstrt = tempx;
+    x = xstrt + cos(a);
+    ystrt = tempy;
+    y = ystrt + sin(a);
+  }
+  
+  void movestars() {
+    dist = dist(x,y,xstrt,ystrt);
+    size = sqrt(dist/2);
+    
+    a = atan2(y-height/2,x-width/2);
+    x += cos(a)*(dist/vari);
+    y += sin(a)*(dist/vari);
+    
+    if (dist>sqrt(width*height)) {xstrt=random(0,width); ystrt=random(0,height); size=0; x=xstrt+cos(a); y=ystrt+sin(a);}
+  }
+  void displaystars() {
+    strokeWeight(0);
+    if (trails == 1) {
+      for (int i=0;i<10;i++) {
+        fill(100 + 255/(i+1));
+        circle(x - cos(a)*(i*(size/sqrt(i+3))),y - sin(a)*(i*(size/sqrt(i+3))),size/sqrt(i+2));
+      }
+    }
+    fill(255);
+    circle(x,y,size);
+  }
+}
+
+void keyReleased() {
+  trails ++;
+  if (trails >= 2) {trails = 0;}
+}
+
